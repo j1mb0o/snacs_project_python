@@ -122,7 +122,7 @@ def generate_attribute_report(name: str):
     df.to_csv(f"{name}.csv", index=False)
 
 if __name__ == "__main__":
-    G1 = rx.PyDiGraph.read_edge_list("../data/stanford_web.csv")
+    G1 = rx.PyDiGraph.read_edge_list("data/stanford_web.csv")
     start = perf_counter()
     # G2 = nx.read_edgelist("../data/medium.tsv", create_using=nx.DiGraph)
     end = perf_counter()

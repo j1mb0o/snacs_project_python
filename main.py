@@ -28,10 +28,11 @@ if __name__ == "__main__":
     parser.add_argument('--full_report', '-r', action='store_true', default=False)
     args = parser.parse_args()
 
-    if not os.path.exists(os.path.joint(ROOT_DIR, "data")):
-        os.mkdir(os.path.join(ROOT_DIR, "data"))
-    if not os.path.exists(os.path.joint(ROOT_DIR, "stats")):
-        os.mkdir(os.path.join(ROOT_DIR, "stats"))
+
+    if not os.path.exists(os.path.join(CURRENT_SCRIPT_DIRECTORY, "data")):
+        os.mkdir(os.path.join(CURRENT_SCRIPT_DIRECTORY, "data"))
+    if not os.path.exists(os.path.join(CURRENT_SCRIPT_DIRECTORY, "stats")):
+        os.mkdir(os.path.join(CURRENT_SCRIPT_DIRECTORY, "stats"))
         
     if args.dataset is None:
         data = ["stanford_web","google_web", "berkstan_web", "wikipedia","twitter_social"]
@@ -40,7 +41,7 @@ if __name__ == "__main__":
     
     if args.download:
         for dataset in data:
-            if not os.path.exists(os.path.join(ROOT_DIR, "data", f"{dataset}.csv")):
+            if not os.path.exists(os.path.join(CURRENT_SCRIPT_DIRECTORY, "data", f"{dataset}.csv")):
                 download_and_decompress(dataset)
             else:
                 print(f"{dataset} already exists skipping download!")
@@ -48,7 +49,7 @@ if __name__ == "__main__":
     if args.compress:
         for dataset in data:
 
-            if  os.path.exists(os.path.join(ROOT_DIR, "compressed_data", f"{dataset}.graph")):
+            if  os.path.exists(os.path.join(CURRENT_SCRIPT_DIRECTORY, "compressed_data", f"{dataset}.graph")):
                 print(f"{dataset} already exists skipping compression!")
                 continue
 
@@ -68,6 +69,6 @@ if __name__ == "__main__":
 
     if args.report_dataset:
         for dataset in data:
-            if os.path.exists(os.path.join(ROOT_DIR, "data", f"{dataset}.csv")):
+            if os.path.exists(os.path.join(CURRENT_SCRIPT_DIRECTORY, "data", f"{dataset}.csv")):
                 print(f"Generating report for {dataset}")
                 generate_attribute_report(dataset)

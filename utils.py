@@ -10,7 +10,7 @@ import io
 current_script_directory = os.path.dirname(os.path.abspath(__file__))
 
 # Get the parent directory (one layer higher)
-ROOT_DIR = os.path.dirname(current_script_directory)
+# ROOT_DIR = os.path.dirname(current_script_directory)
 
 
 def download_and_decompress(filename):
@@ -31,17 +31,17 @@ def download_and_decompress(filename):
     # unzip_file(destination, '.')
 
     with zipfile.ZipFile(destination, "r") as zip_ref:
-        zip_ref.extract(zip_ref.namelist()[0], os.path.join(ROOT_DIR, "data"))
+        zip_ref.extract(zip_ref.namelist()[0], os.path.join(current_script_directory, "data"))
 
     shutil.move(
-        os.path.join(ROOT_DIR, "data", "edges.csv"),
-        os.path.join(ROOT_DIR, "data", f"{filename}.csv"),
+        os.path.join(current_script_directory, "data", "edges.csv"),
+        os.path.join(current_script_directory, "data", f"{filename}.csv"),
     )
     os.remove(destination)
 
 
 def compress_graph(input=None):
-    # os.chdir(ROOT_DIR)
+    # os.chdir(current_script_directory)
     # subprocess.run('pwd')
 
     if input is None:
@@ -50,8 +50,8 @@ def compress_graph(input=None):
     else:
         # TODO: COMPLETE THE OUTPUT PATH
         java_cmd = f"""java it.unimi.dsi.webgraph.BVGraph -g ArcListASCIIGraph 
-                    {os.path.join(ROOT_DIR,"data",f"{input}.csv")} 
-                    {os.path.join(ROOT_DIR,"compressed_data",input)}""".split()
+                    {os.path.join(current_script_directory,"data",f"{input}.csv")} 
+                    {os.path.join(current_script_directory,"compressed_data",input)}""".split()
         subprocess.run(java_cmd)
 
 
