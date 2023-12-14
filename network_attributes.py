@@ -74,7 +74,7 @@ def generate_attribute_report(name: str):
     """
     Generate a report of the attributes of the graph
     """
-    G = rx.PyDiGraph.read_edge_list(f"../data/{name}.csv")
+    G = rx.PyDiGraph.read_edge_list(f"data/{name}.csv")
     print(name)
     # G = rx.PyDiGraph.read_edge_list(f"../data/{name}.tsv")
     
@@ -83,15 +83,15 @@ def generate_attribute_report(name: str):
 
     print("Getting number of edges")
     edges = len(G.edge_indices())
-    
+    # exit()
     print("Getting density")
     dens = density(G)
     
     print("Getting average out degree centrality")
     avg_out = average_out_degree_centrality(G)
     
-    # print("Getting average betweenness centrality")
-    # avg_bet = average_betweenness_centrality(G)
+    print("Getting average betweenness centrality")
+    avg_bet = average_betweenness_centrality(G)
     
     print("Getting average closeness centrality")
     
@@ -112,7 +112,7 @@ def generate_attribute_report(name: str):
         "Number of Edges": edges,
         "Density": dens,
         "Average Out Degree Centrality": avg_out,
-        # "Average Betweenness Centrality": avg_bet,
+        "Average Betweenness Centrality": avg_bet,
         "Average Closeness Centrality": avg_close,
         "Global Clustering Coefficient": global_clust,
         "Average Shortest Path Length": avg_short,
@@ -122,40 +122,44 @@ def generate_attribute_report(name: str):
     df.to_csv(f"{name}.csv", index=False)
 
 if __name__ == "__main__":
-    G1 = rx.PyDiGraph.read_edge_list("data/stanford_web.csv")
     start = perf_counter()
-    # G2 = nx.read_edgelist("../data/medium.tsv", create_using=nx.DiGraph)
+    generate_attribute_report("stanford_web")
     end = perf_counter()
-    print("Finished reading in networkx: ", end - start)
+    print("Time taken by rustworkx: ", end - start)
+    # G1 = rx.PyDiGraph.read_edge_list("data/stanford_web.csv")
+    # start = perf_counter()
+    # # G2 = nx.read_edgelist("../data/medium.tsv", create_using=nx.DiGraph)
+    # end = perf_counter()
+    # print("Finished reading in networkx: ", end - start)
 
-    print("Getting number of nodes")
-    start = perf_counter()
-    nodes = len(G1.node_indices())
-    end = perf_counter()
-    print("Finished getting number of nodes: ", end - start)
-    print("Number of nodes: ", nodes)
+    # print("Getting number of nodes")
+    # start = perf_counter()
+    # nodes = len(G1.node_indices())
+    # end = perf_counter()
+    # print("Finished getting number of nodes: ", end - start)
+    # print("Number of nodes: ", nodes)
 
 
-    print("Getting number of edges")
-    start = perf_counter()
-    edges = len(G1.edge_indices())
-    end = perf_counter()
-    print("Finished getting number of edges: ", end - start)
-    print("Number of edges: ", edges)
+    # print("Getting number of edges")
+    # start = perf_counter()
+    # edges = len(G1.edge_indices())
+    # end = perf_counter()
+    # print("Finished getting number of edges: ", end - start)
+    # print("Number of edges: ", edges)
 
-    print("Getting density")
-    start = perf_counter()
-    dens = density(G1)
-    end = perf_counter()
-    print("Finished getting density: ", end - start)
-    print("Density: ", dens)
+    # print("Getting density")
+    # start = perf_counter()
+    # dens = density(G1)
+    # end = perf_counter()
+    # print("Finished getting density: ", end - start)
+    # print("Density: ", dens)
 
-    print("Getting global clustering coefficient")
-    start = perf_counter()
-    global_clust = global_clustering_coefficient(G1)
-    end = perf_counter()
-    print("Finished getting global clustering coefficient: ", end - start)
-    print("Global Clustering Coefficient: ", global_clust)
+    # print("Getting global clustering coefficient")
+    # start = perf_counter()
+    # global_clust = global_clustering_coefficient(G1)
+    # end = perf_counter()
+    # print("Finished getting global clustering coefficient: ", end - start)
+    # print("Global Clustering Coefficient: ", global_clust)
 
 
 
