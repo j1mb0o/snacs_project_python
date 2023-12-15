@@ -3,6 +3,7 @@ import networkx as nx
 from time import perf_counter
 import pandas as pd
 import numpy as np
+from networkx.algorithms import approximation
 
 # If will not finish then sumple getting the biggest stongly connected component
 # rustworkx.strongly_connected_components
@@ -74,6 +75,7 @@ def generate_attribute_report(name: str):
     """
     Generate a report of the attributes of the graph
     """
+    start = perf_counter()
     G = rx.PyDiGraph.read_edge_list(f"data/{name}.csv")
     print(name)
     # G = rx.PyDiGraph.read_edge_list(f"../data/{name}.tsv")
@@ -107,6 +109,8 @@ def generate_attribute_report(name: str):
     print("Getting average shortest path length")
     avg_short = average_shorted_path_length(G)
 
+    end = perf_counter()
+
     graph_dict = {
         "Number of Nodes": nodes,
         "Number of Edges": edges,
@@ -116,90 +120,12 @@ def generate_attribute_report(name: str):
         "Average Closeness Centrality": avg_close,
         "Global Clustering Coefficient": global_clust,
         "Average Shortest Path Length": avg_short,
+        "Time": end - start 
     }
     
     df = pd.DataFrame(list(graph_dict.items()), columns=['Attribute', 'Value'])
     df.to_csv(f"{name}.csv", index=False)
 
 if __name__ == "__main__":
-    start = perf_counter()
-    generate_attribute_report("stanford_web")
-    end = perf_counter()
-    print("Time taken by rustworkx: ", end - start)
-    # G1 = rx.PyDiGraph.read_edge_list("data/stanford_web.csv")
-    # start = perf_counter()
-    # # G2 = nx.read_edgelist("../data/medium.tsv", create_using=nx.DiGraph)
-    # end = perf_counter()
-    # print("Finished reading in networkx: ", end - start)
 
-    # print("Getting number of nodes")
-    # start = perf_counter()
-    # nodes = len(G1.node_indices())
-    # end = perf_counter()
-    # print("Finished getting number of nodes: ", end - start)
-    # print("Number of nodes: ", nodes)
-
-
-    # print("Getting number of edges")
-    # start = perf_counter()
-    # edges = len(G1.edge_indices())
-    # end = perf_counter()
-    # print("Finished getting number of edges: ", end - start)
-    # print("Number of edges: ", edges)
-
-    # print("Getting density")
-    # start = perf_counter()
-    # dens = density(G1)
-    # end = perf_counter()
-    # print("Finished getting density: ", end - start)
-    # print("Density: ", dens)
-
-    # print("Getting global clustering coefficient")
-    # start = perf_counter()
-    # global_clust = global_clustering_coefficient(G1)
-    # end = perf_counter()
-    # print("Finished getting global clustering coefficient: ", end - start)
-    # print("Global Clustering Coefficient: ", global_clust)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    # generate_attribute_report("stanford_web")
-    # print("Time taken by rustworkx: ", end - start)
-    # assert len(G1.node_indices()) == len(G2.nodes())
-    # assert len(G1.edge_indices()) == len(G2.edges())
-    # assert density(G1) == nx.density(G2)
-    # assert (
-    #     np.abs(
-    #         average_out_degree_centrality(G1)
-    #         - np.mean(list(nx.out_degree_centrality(G2).values()))
-    #     )
-    #     <= 1e-10
-    # )
-    # assert (
-    #     np.abs(
-    #         average_betweenness_centrality(G1)
-    #         - np.mean(list(nx.betweenness_centrality(G2).values()))
-    #     )
-    #     <= 1e-10
-    # )
-    # assert (
-    #     np.abs(
-    #         average_closeness_centrality(G1)
-    #         - np.mean(list(nx.closeness_centrality(G2).values()))
-    #     )
-    #     <= 1e-10
-    # )
-
+    generate_attribute_report('notre_dame')
