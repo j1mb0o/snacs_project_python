@@ -3,7 +3,7 @@ import networkx as nx
 from time import perf_counter
 import pandas as pd
 import numpy as np
-from networkx.algorithms import approximation
+import os
 
 # If will not finish then sumple getting the biggest stongly connected component
 # rustworkx.strongly_connected_components
@@ -128,4 +128,7 @@ def generate_attribute_report(name: str):
 
 if __name__ == "__main__":
 
-    generate_attribute_report('google')
+    # generate_attribute_report('google')
+    for file in os.listdir("random-graphs"):
+        print(file)
+        generate_attribute_report(file.split('.')[0])

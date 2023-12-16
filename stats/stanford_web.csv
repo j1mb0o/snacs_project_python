@@ -1,0 +1,10 @@
+Attribute,Value
+Number of Nodes,281904.0
+Number of Edges,2312497.0
+Density,2.9099145907448216e-05
+Average Out Degree Centrality,2.9099145907448213e-05
+Average Betweenness Centrality,2.0334852544955285e-05
+Average Closeness Centrality,0.043809509383984674
+Global Clustering Coefficient,0.007453207044846456
+Average Shortest Path Length,12.376381017966468
+Time,60589.5992998
