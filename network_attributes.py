@@ -4,9 +4,8 @@ from time import perf_counter
 import pandas as pd
 import numpy as np
 import os
+import argparse
 
-# If will not finish then sumple getting the biggest stongly connected component
-# rustworkx.strongly_connected_components
 def average_betweenness_centrality(G):
     return np.mean(list(rx.digraph_betweenness_centrality(G).values()))
 
@@ -25,7 +24,6 @@ def average_out_degree_centrality(G):
 
 
 def density(G):
-    # frac m/n(n-1)
     # A dense graph might have more redundancy that can be exploited for compression
     n = len(G.nodes())
     m = len(G.edges())
@@ -40,18 +38,12 @@ def __convert_rustworkx_to_networkx(graph):
     return digraph
 
 
-# TODO: Closeness Centrality
-# rustworkx.digraph_closeness_centrality (
 def average_closeness_centrality(G):
     return np.mean(list(rx.digraph_closeness_centrality(G).values()))
-    #    np.mean(list(rx.digraph_closeness_centrality(G).values()))
 
 
-# TODO: Global Clustering Coefficient (transitivity):
 def global_clustering_coefficient(G):
     return rx.transitivity(G)
-
-
 
 
 def average_shorted_path_length(G):
@@ -71,12 +63,15 @@ def average_shorted_path_length(G):
     return rx.digraph_unweighted_average_shortest_path_length(G, disconnected=True)
 
 
-def generate_attribute_report(name: str):
+def generate_attribute_report(name: str, random: bool = False):
     """
     Generate a report of the attributes of the graph
     """
     start = perf_counter()
-    G = rx.PyDiGraph.read_edge_list(f"data/{name}.csv")
+    if random:
+        G = rx.PyDiGraph.read_edge_list(f"random-graphs/{name}.csv")
+    else:
+        G = rx.PyDiGraph.read_edge_list(f"data/{name}.csv")
     print(name)
     # G = rx.PyDiGraph.read_edge_list(f"../data/{name}.tsv")
     
@@ -126,9 +121,12 @@ def generate_attribute_report(name: str):
     df = pd.DataFrame(list(graph_dict.items()), columns=['Attribute', 'Value'])
     df.to_csv(f"{name}.csv", index=False)
 
+
 if __name__ == "__main__":
 
+    argparse = argparse.ArgumentParser(description='Analyse random graphs')
+    argparse.add_argument('--random','-r', action='store_true', help='random or not')
     # generate_attribute_report('google')
     for file in os.listdir("random-graphs"):
         print(file)
-        generate_attribute_report(file.split('.')[0])
+        generate_attribute_report(file.split('.')[0], argparse.random)
