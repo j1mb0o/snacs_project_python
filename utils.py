@@ -4,7 +4,6 @@ import shutil
 import os
 import subprocess
 import pandas as pd
-import io
 
 # Get the diretory of the current script
 current_script_directory = os.path.dirname(os.path.abspath(__file__))
