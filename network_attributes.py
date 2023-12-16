@@ -128,4 +128,4 @@ def generate_attribute_report(name: str):
 
 if __name__ == "__main__":
 
-    generate_attribute_report('stanford_web')
+    generate_attribute_report('google')
