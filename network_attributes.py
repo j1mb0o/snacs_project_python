@@ -47,19 +47,6 @@ def global_clustering_coefficient(G):
 
 
 def average_shorted_path_length(G):
-    """
-        The average shortest path length in a graph, as computed by the `average_shortest_path_length` metric,
-        can impact compression in several ways. The average shortest path length provides insights into the overall 
-        "connectedness" or "distance" between nodes in the graph. Here are some ways in which this metric might impact graph compression:
-
-    1. **Graph Structure:**
-       - **Short Paths:** If the average shortest path length is small, it indicates that nodes in the graph are closely connected,
-        and there are short paths between most pairs of nodes. Compression algorithms may exploit such local connectivity to represent the graph more efficiently.
-
-       - **Long Paths:** Conversely, if the average shortest path length is large, 
-       the graph may have more distant connections between nodes. 
-       Compression algorithms might face challenges in efficiently representing long-range connections.
-    """
     return rx.digraph_unweighted_average_shortest_path_length(G, disconnected=True)
 
 
@@ -84,25 +71,25 @@ def generate_attribute_report(name: str, random: bool = False):
     print("Getting density")
     dens = density(G)
     
-    # print("Getting average out degree centrality")
-    # avg_out = average_out_degree_centrality(G)
+    print("Getting average out degree centrality")
+    avg_out = average_out_degree_centrality(G)
     
-    # print("Getting average betweenness centrality")
-    # avg_bet = average_betweenness_centrality(G)
+    print("Getting average betweenness centrality")
+    avg_bet = average_betweenness_centrality(G)
     
-    # print("Getting average closeness centrality")
+    print("Getting average closeness centrality")
     
-    # g_nx = __convert_rustworkx_to_networkx(G)
+    g_nx = __convert_rustworkx_to_networkx(G)
 
-    # avg_close = np.mean(list(nx.closeness_centrality(g_nx).values()))
-    # avg_close = average_closeness_centrality(G)
+    avg_close = np.mean(list(nx.closeness_centrality(g_nx).values()))
+    avg_close = average_closeness_centrality(G)
 
     
     print("Getting global clustering coefficient")
     global_clust = global_clustering_coefficient(G)
     
-    # print("Getting average shortest path length")
-    # avg_short = average_shorted_path_length(G)
+    print("Getting average shortest path length")
+    avg_short = average_shorted_path_length(G)
 
     end = perf_counter()
 
@@ -110,24 +97,24 @@ def generate_attribute_report(name: str, random: bool = False):
         "Number of Nodes": nodes,
         "Number of Edges": edges,
         "Density": dens,
-        # "Average Out Degree Centrality": avg_out,
-        # "Average Betweenness Centrality": avg_bet,
-        # "Average Closeness Centrality": avg_close,
+        "Average Out Degree Centrality": avg_out,
+        "Average Betweenness Centrality": avg_bet,
+        "Average Closeness Centrality": avg_close,
         "Global Clustering Coefficient": global_clust,
-        # "Average Shortest Path Length": avg_short,
+        "Average Shortest Path Length": avg_short,
         "Time": end - start 
     }
     
     df = pd.DataFrame(list(graph_dict.items()), columns=['Attribute', 'Value'])
-    df.to_csv(f"{name}_final.csv", index=False)
+    df.to_csv(f"{name}.csv", index=False)
 
 
 if __name__ == "__main__":
 
     argparse = argparse.ArgumentParser(description='Analyse random graphs')
     argparse.add_argument('--random','-r', action='store_true', help='random or not')
-    # generate_attribute_report('google')
-    for file in os.listdir("random-graphs"):
-        print(file)
-        generate_attribute_report(file.split('.')[0], True)
+    generate_attribute_report('foldoc')
+    # for file in os.listdir("random-graphs"):
+    #     print(file)
+    #     generate_attribute_report(file.split('.')[0], True)
     # generate_attribute_report('soc-gemsec-RO_like', True)
