@@ -4,7 +4,7 @@ import rustworkx as rx
 
 stats = {"Network":[], "bits/node":[], "bits/node(compressed)":[], "Size reduction (%)":[] }
 
-for filename in os.listdir('random-graphs'):
+for filename in os.listdir('data'):
     print(filename.split('.')[0])
     g = rx.PyGraph.read_edge_list('random-graphs/' + filename)
     print('Number of nodes: ', len(g.node_indices()))
@@ -18,5 +18,5 @@ for filename in os.listdir('random-graphs'):
     stats["Size reduction (%)"].append(diff)
 
 df = pd.DataFrame(stats)
-df.to_csv('random_compression_details.csv', index=False)
+df.to_csv('compression_details.csv', index=False)
 # df.to_latex('compression_details.tex', index=False)

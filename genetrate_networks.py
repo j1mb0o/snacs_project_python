@@ -36,7 +36,6 @@ if __name__ == '__main__':
                           '-d', 
                           nargs='+', 
                           default=None, 
-                          choices=['google_like', 'random', 'stanford_like', 'berkstan_like', 'wikipedia_like', 'twitter_like'],
                         help='dataset name')
     arg = argparse.parse_args()
 
