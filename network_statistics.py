@@ -54,67 +54,120 @@ def generate_attribute_report(name: str, random: bool = False):
     """
     Generate a report of the attributes of the graph
     """
+    OUT_DIR = 'random-networks-stats' if random else 'stats'
     start = perf_counter()
     if random:
         G = rx.PyDiGraph.read_edge_list(f"random-graphs/{name}.csv")
     else:
         G = rx.PyDiGraph.read_edge_list(f"data/{name}.csv")
     print(name)
-    # G = rx.PyDiGraph.read_edge_list(f"../data/{name}.tsv")
     
     print("Getting number of nodes")
     nodes = len(G.node_indices())
 
     print("Getting number of edges")
     edges = len(G.edge_indices())
-    # exit()
     print("Getting density")
     dens = density(G)
     
-    print("Getting average out degree centrality")
-    avg_out = average_out_degree_centrality(G)
-    
-    print("Getting average betweenness centrality")
-    avg_bet = average_betweenness_centrality(G)
-    
-    print("Getting average closeness centrality")
-    
-    g_nx = __convert_rustworkx_to_networkx(G)
-
-    avg_close = np.mean(list(nx.closeness_centrality(g_nx).values()))
-    avg_close = average_closeness_centrality(G)
-
-    
     print("Getting global clustering coefficient")
     global_clust = global_clustering_coefficient(G)
-    
+
     print("Getting average shortest path length")
     avg_short = average_shorted_path_length(G)
+    if not random:
+        print("Getting average out degree centrality")
+        avg_out = average_out_degree_centrality(G)
+        
+        print("Getting average betweenness centrality")
+        avg_bet = average_betweenness_centrality(G)
+        
+        print("Getting average closeness centrality")
+        
+        g_nx = __convert_rustworkx_to_networkx(G)
 
-    end = perf_counter()
+        avg_close = np.mean(list(nx.closeness_centrality(g_nx).values()))
+        avg_close = average_closeness_centrality(G)
 
-    graph_dict = {
-        "Number of Nodes": nodes,
-        "Number of Edges": edges,
-        "Density": dens,
-        "Average Out Degree Centrality": avg_out,
-        "Average Betweenness Centrality": avg_bet,
-        "Average Closeness Centrality": avg_close,
-        "Global Clustering Coefficient": global_clust,
-        "Average Shortest Path Length": avg_short,
-        "Time": end - start 
-    }
+        end = perf_counter()
+
+        graph_dict = {
+            "Number of Nodes": nodes,
+            "Number of Edges": edges,
+            "Density": dens,
+            "Average Out Degree Centrality": avg_out,
+            "Average Betweenness Centrality": avg_bet,
+            "Average Closeness Centrality": avg_close,
+            "Global Clustering Coefficient": global_clust,
+            "Average Shortest Path Length": avg_short,
+            "Time": end - start 
+        }
+    else:
+        end = perf_counter()
+        graph_dict = {
+            "Number of Nodes": nodes,
+            "Number of Edges": edges,
+            "Density": dens,
+            "Global Clustering Coefficient": global_clust,
+            "Average Shortest Path Length": avg_short,
+            "Time": end - start 
+        }
+
+    df = pd.DataFrame(list(graph_dict.items()), columns=None)
+    df.to_csv(os.path.join(OUT_DIR,f"{name}.csv"), index=False)
+
+
+def generate_whole_report(random: bool = False):
+    dfs = []
+    networks = ['foldoc_like', 'google_like', 'notre_dame_like', 'stanford_web_like'] if random else ['foldoc', 'google', 'notre_dame', 'stanford_web']
+    DIR = 'random-graphs' if random else 'data'
+    OUT_DIR = 'random-networks-stats' if random else 'stats' 
     
-    df = pd.DataFrame(list(graph_dict.items()), columns=['Attribute', 'Value'])
-    df.to_csv(f"{name}.csv", index=False)
+    for network in networks:
+        df = pd.read_csv(os.path.join(DIR,f'{network}.csv') , header=None)
+        df = df.transpose()
+        df.columns = df.iloc[0]
+        df = df.drop(df.index[0])
+        df["Network"] = network.capitalize()
 
+        # Rearrange the columns to make 'Network' the first column
+        df = df.reindex(['Network'] + list(df.columns[:-1]), axis=1)
+
+        # Change the data type of certain columns to integer
+        cols_to_int = ['Number of Nodes', 'Number of Edges']  # replace with your column names
+        for col in cols_to_int:
+            df[col] = df[col].astype(int).apply(lambda x: "{:,}".format(x))
+
+        # Apply a prefix of 10e-4 to certain columns
+        cols_to_scale = ['Density', 'Average Out Degree Centrality', 'Average Betweenness Centrality']  # replace with your column names
+        for col in cols_to_scale:
+            df[col] = df[col].apply(lambda x: "{:0.4e}".format(x))
+
+        rest_cols = ["Average Closeness Centrality", "Global Clustering Coefficient", "Average Shortest Path Length"]
+        for col in rest_cols:
+            df[col] = df[col].apply(lambda x: "{:.4}".format(x))
+
+        dfs.append(df)
+
+    result = pd.concat(dfs)
+    result.to_csv(os.path.join(OUT_DIR,'all-stats.csv') , index=False)
+    result.to_latex(os.path.join(OUT_DIR,'all-stats.csv'), index=False)
 
 if __name__ == "__main__":
 
     argparse = argparse.ArgumentParser(description='Analyse random graphs')
     argparse.add_argument('--random','-r', action='store_true', help='random or not')
-    generate_attribute_report('foldoc')
-    # for file in os.listdir("random-graphs"):
-    #     print(file)
-    #     generate_attribute_report(file.split('.')[0], True)
+    argparse.add_argument('--whole','-w', action='store_true', help='whole report')
+    argparse.add_argument('--report','-rp', action='store_true', help='attribute report')
+    args = argparse.parse_args()
+
+    if args.whole:
+        generate_whole_report(args.random)
+
+    
+    # generate_attribute_report('foldoc')
+    if args.report:
+        for file in os.listdir("random-graphs"):
+            print(file)
+            generate_attribute_report(file.split('.')[0], args.random)
     # generate_attribute_report('soc-gemsec-RO_like', True)
