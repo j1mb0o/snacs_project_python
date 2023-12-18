@@ -16,8 +16,6 @@ def assortativity(G):
 
 
 def average_out_degree_centrality(G):
-    # TODO: Degree Centrality
-    # Sum the outdegree divided by the number of nodes - 1
     n = len(G.node_indices())
     out_deg = {k: G.out_degree(k) / (n - 1) for k in G.node_indices()}
     return np.mean(list(out_deg.values()))
@@ -167,7 +165,11 @@ if __name__ == "__main__":
     
     # generate_attribute_report('foldoc')
     if args.report:
-        for file in os.listdir("random-graphs"):
-            print(file)
-            generate_attribute_report(file.split('.')[0], args.random)
-    # generate_attribute_report('soc-gemsec-RO_like', True)
+        if args.random:
+            for file in os.listdir("random-graphs"):
+                print(file)
+                generate_attribute_report(file.split('.')[0], args.random)
+        else:
+            for file in os.listdir("data"):
+                print(file)
+                generate_attribute_report(file.split('.')[0], args.random)
