@@ -3,4 +3,5 @@ Number of Nodes,281904.0
 Number of Edges,2312497.0
 Density,2.9099145907448216e-05
 Global Clustering Coefficient,3.056526523717354e-05
-Time,2.2957477509917226
+Average Shortest Path Length,6.203350631782019
+Time,5765.802355499996
