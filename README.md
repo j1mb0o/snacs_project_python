@@ -1,6 +1,6 @@
 # snacs_project_python
 
-To run the files you should have WebGraph installed. See intructions for the instalation
+To run the files you should have WebGraph installed [link for installation]([https://link-url-here.org](https://github.com/j1mb0o/webgraph)). See intructions for the instalation
 
 Create a new conda envinonment from `environment.yml` file
 
